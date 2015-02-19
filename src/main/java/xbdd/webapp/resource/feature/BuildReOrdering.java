@@ -25,8 +25,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import xbdd.model.Coordinates;
 import xbdd.webapp.factory.MongoDBAccessor;
-import xbdd.webapp.util.Coordinates;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -48,7 +48,7 @@ public class BuildReOrdering {
 	public List<String> getBuildsForProductVersion(@BeanParam Coordinates coordinates) {
 		final DB db = this.client.getDB("bdd");
 		final DBCollection summaryCollection = db.getCollection("summary");
-		final BasicDBObject query = new BasicDBObject("_id", coordinates.getProduct() + "/" + coordinates.getVersionString());
+		final BasicDBObject query = new BasicDBObject("_id", coordinates.getProduct() + "/" + coordinates.getVersion());
 		return (List<String>) summaryCollection.findOne(query).get("builds");
 	}
 
@@ -63,7 +63,7 @@ public class BuildReOrdering {
 			final Builds json) {
 		final DB db = this.client.getDB("bdd");
 		final DBCollection summaryCollection = db.getCollection("summary");
-		final BasicDBObject query = new BasicDBObject("_id", coordinates.getProduct() + "/" + coordinates.getVersionString());
+		final BasicDBObject query = new BasicDBObject("_id", coordinates.getProduct() + "/" + coordinates.getVersion());
 		summaryCollection.update(query, new BasicDBObject("$set", new BasicDBObject("builds", json.builds)));
 
 		return Response.ok().build();

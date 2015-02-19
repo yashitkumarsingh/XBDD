@@ -24,9 +24,9 @@
 			 	<div class='label-div'><span class='label label-passed curr-label'>added</span></div>
 			{{else}}
 				<div class='edit-label'>
-				<div class='label-div'><span class='label   alert-{{getStatusStyle this.prev}} prev-label'>{{this.prev}}</span></div>
+				<div class='label-div'><span class='label   alert-{{getStatusStyle this.previousStatus}} prev-label'>{{this.previousStatus}}</span></div>
 				<div class='arrow-div'><span class='html-entity'>&#8594;</span> </div>
-				<div  class='label-div'><span class='label   alert-{{getStatusStyle this.curr}} curr-label'>{{this.curr}}</span></div>
+				<div  class='label-div'><span class='label   alert-{{getStatusStyle this.currentStatus}} curr-label'>{{this.currentStatus}}</span></div>
 				</div>
 			{{/if}}
 		</div>			

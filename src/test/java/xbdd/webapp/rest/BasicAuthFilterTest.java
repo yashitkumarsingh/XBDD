@@ -15,6 +15,10 @@
  */
 package xbdd.webapp.rest;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.security.Principal;
 
 import javax.servlet.FilterChain;
@@ -25,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,53 +50,53 @@ public class BasicAuthFilterTest {
 
 	@Test
 	public void testDoFilter_authenticated() throws Exception {
-		Mockito.when(this.request.getUserPrincipal()).thenReturn(Mockito.mock(Principal.class));
+		when(this.request.getUserPrincipal()).thenReturn(mock(Principal.class));
 
 		this.filter.doFilter(this.request, this.response, this.filterChain);
 
-		Mockito.verify(this.filterChain).doFilter(this.request, this.response);
+		verify(this.filterChain).doFilter(this.request, this.response);
 	}
 
 	@Test
 	public void testDoFilter_withBasic() throws Exception {
-		Mockito.when(this.request.getUserPrincipal()).thenReturn(null).thenReturn(Mockito.mock(Principal.class));
-		Mockito.when(this.request.getHeader("Authorization")).thenReturn("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
+		when(this.request.getUserPrincipal()).thenReturn(null).thenReturn(mock(Principal.class));
+		when(this.request.getHeader("Authorization")).thenReturn("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
 
 		this.filter.doFilter(this.request, this.response, this.filterChain);
 
-		Mockito.verify(this.request).login("Aladdin", "open sesame");
-		Mockito.verify(this.filterChain).doFilter(this.request, this.response);
+		verify(this.request).login("Aladdin", "open sesame");
+		verify(this.filterChain).doFilter(this.request, this.response);
 	}
 
 	@Test
 	public void testDoFilter_withColon() throws Exception {
-		Mockito.when(this.request.getUserPrincipal()).thenReturn(null).thenReturn(Mockito.mock(Principal.class));
-		Mockito.when(this.request.getHeader("Authorization")).thenReturn("Basic QWxhZGRpbjpvcGVuOnNlc2FtZQ==");
+		when(this.request.getUserPrincipal()).thenReturn(null).thenReturn(mock(Principal.class));
+		when(this.request.getHeader("Authorization")).thenReturn("Basic QWxhZGRpbjpvcGVuOnNlc2FtZQ==");
 
 		this.filter.doFilter(this.request, this.response, this.filterChain);
 
-		Mockito.verify(this.request).login("Aladdin", "open:sesame");
-		Mockito.verify(this.filterChain).doFilter(this.request, this.response);
+		verify(this.request).login("Aladdin", "open:sesame");
+		verify(this.filterChain).doFilter(this.request, this.response);
 	}
 
 	@Test
 	public void testDoFilter_fallback() throws Exception {
-		Mockito.when(this.request.getUserPrincipal()).thenReturn(null);
-		Mockito.when(this.request.getHeader("Authorization")).thenReturn(null);
+		when(this.request.getUserPrincipal()).thenReturn(null);
+		when(this.request.getHeader("Authorization")).thenReturn(null);
 
 		this.filter.doFilter(this.request, this.response, this.filterChain);
 
-		Mockito.verify(this.request).authenticate(this.response);
+		verify(this.request).authenticate(this.response);
 	}
 
 	@Test
 	public void testDoFilter_fallbackDigest() throws Exception {
-		Mockito.when(this.request.getUserPrincipal()).thenReturn(null);
-		Mockito.when(this.request.getHeader("Authorization")).thenReturn("NotBasic");
+		when(this.request.getUserPrincipal()).thenReturn(null);
+		when(this.request.getHeader("Authorization")).thenReturn("NotBasic");
 
 		this.filter.doFilter(this.request, this.response, this.filterChain);
 
-		Mockito.verify(this.request).authenticate(this.response);
+		verify(this.request).authenticate(this.response);
 	}
 
 }

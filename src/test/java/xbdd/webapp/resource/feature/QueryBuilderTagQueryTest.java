@@ -67,6 +67,7 @@ public class QueryBuilderTagQueryTest {
 
 		this.mongodExecutable = MongodStarter.getDefaultInstance().prepare(mongoConfigConfig);
 		this.mongodExecutable.start();
+
 		final IMongoImportConfig mongoImportConfig = new MongoImportConfigBuilder()
 				.version(Version.Main.PRODUCTION)
 				.net(new Net(port, Network.localhostIsIPv6()))

@@ -20,8 +20,8 @@ import java.util.List;
 
 import xbdd.model.MergeFeature;
 import xbdd.model.MergeScenario;
-import xbdd.model.simple.Feature;
-import xbdd.model.simple.Scenario;
+import xbdd.model.Feature;
+import xbdd.model.Scenario;
 
 /**
  * Represents a helper class for retrieving a merged feature
@@ -71,7 +71,7 @@ public class MultipleBuildsFeatureMergeHelper {
 			mergeFeature.setId(feature.getId());
 			mergeFeature.setName(feature.getName());
 			mergeFeature.setStatuses(featureStatuses);
-			mergeFeature.setUrl("reports/" + feature.getCoordinates().getProduct() + "/" + feature.getCoordinates().getVersionString()
+			mergeFeature.setUrl("reports/" + feature.getCoordinates().getProduct() + "/" + feature.getCoordinates().getVersion()
 					+ "/{{BUILD_NAME}}/" + feature.getId());
 			mergeFeature.setScenarios(scenarioList);
 

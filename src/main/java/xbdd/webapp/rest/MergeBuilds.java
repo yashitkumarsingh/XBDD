@@ -26,14 +26,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import xbdd.model.simple.Feature;
-import xbdd.util.MultipleBuildsFeatureMergeHelper;
+import org.jongo.Jongo;
+import org.jongo.MongoCollection;
+import org.jongo.MongoCursor;
+
+import xbdd.model.Feature;
 import xbdd.webapp.factory.MongoDBAccessor;
+import xbdd.util.MultipleBuildsFeatureMergeHelper;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 @Path("rest/reports/multiple")
@@ -57,26 +59,28 @@ public class MergeBuilds {
 	@Produces("application/json")
 	public DBObject getMergedBuilds(final Merge merge) {
 		// Get features collection
-		final DB db = this.client.getDB("bdd");
-		final DBCollection collection = db.getCollection("features");
+		final DB bdd = this.client.getDB("bdd");
+		final Jongo jongo = new Jongo(bdd);
+		final MongoCollection features = jongo.getCollection("features");
+
+		final List<String> or = new ArrayList<String>();
+		
+		for (int i = 0; i < merge.builds.size(); i++) {
+			final Pattern regex = Pattern.compile("^" + merge.product + "/" + merge.version + "/" + (merge.builds.get(i))
+					+ "/");
+			or.add("{\"_id\": {\"$regex\": \"" + regex.toString() + "\"}}");
+		}
+		
+		final MongoCursor<Feature> all = features.find("{'$or': "+ or.toString() +"}").as(Feature.class);
 
 		// A list of all the features in every build, where features have only the attributes the client requires
 		final List<Feature> featureList = new ArrayList<Feature>();
 
 		// query wrapper object
-		final List<DBObject> or = new ArrayList<DBObject>();
-
-		for (int i = 0; i < merge.builds.size(); i++) {
-			final Pattern regex = Pattern.compile("^" + merge.product + "/" + merge.version + "/" + (merge.builds.get(i))
-					+ "/");
-			or.add(new BasicDBObject("_id", regex));
-		}
-
-		final DBCursor temp = collection.find(new BasicDBObject("$or", or), new BasicDBObject("id", 1).append("name", 1)
-				.append("calculatedStatus", 1).append("elements", 1).append("coordinates", 1));
 		final MultipleBuildsFeatureMergeHelper buildMerge = new MultipleBuildsFeatureMergeHelper(merge.builds);
-		while (temp.hasNext()) {
-			final Feature feature = new Feature((BasicDBObject) temp.next());
+		
+		while (all.hasNext()) {
+			final Feature feature = all.next();
 			if (feature.getCoordinates().getBuild().equals(merge.builds.get(0))) {
 				featureList.add(feature);
 			}

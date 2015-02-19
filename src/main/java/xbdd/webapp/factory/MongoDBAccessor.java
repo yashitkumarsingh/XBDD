@@ -35,7 +35,6 @@ public class MongoDBAccessor {
 	}
 
 	public DB getDB(final String dbName) {
-		final DB db = this.client.getDB(dbName);
-		return db;
+		return this.client.getDB(dbName);
 	}
 }

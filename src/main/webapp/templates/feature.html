@@ -104,7 +104,7 @@
 														title="View error message"></span>
 														<div class="testErrorMessages alert alert-danger" style="display: none">{{this.result.error_message}}</div>
 												</span> {{/if}} 
-												</li> 
+												</li>
 												{{#each this.embeddings}} <a rel="lightbox[boston]" href="{{getContext}}rest/attachment/{{this}}" ><img src="{{getContext}}rest/attachment/{{this}}" class="attach-image"/> </a>{{/each}} {{/each}}
 											</ol>
 										</div>
@@ -133,13 +133,16 @@
 															{{#each this.rows}}
 															<tr>
 																{{#each this.cells}}
-																<td>{{this}}</td> {{/each}}
+																    <td>{{this}}</td>
+                                                                {{/each}}
 															</tr>
 															{{/each}}
 														</table>
-													</div> {{/if}}
-												</li> 
-												 {{#each this.embeddings}} <a rel="lightbox[boston]" href="{{getContext}}rest/attachment/{{this}}" ><img src="{{getContext}}rest/attachment/{{this}}" class="attach-image"/> </a>{{/each}}
+													</div>
+                                                    {{/if}}
+												</li>
+												 {{#each this.embeddings}}
+                                                    <a rel="lightbox[boston]" href="{{getContext}}rest/attachment/{{filename}}" ><img src="{{getContext}}/rest/attachment/{{filename}}" class="attach-image"/> </a>{{/each}}
 												 {{/each}}
 											</ol>
 										</div>

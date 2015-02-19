@@ -25,7 +25,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang.StringUtils;
 
 import xbdd.util.Statuses;
-import xbdd.webapp.util.Coordinates;
+import xbdd.model.Coordinates;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;

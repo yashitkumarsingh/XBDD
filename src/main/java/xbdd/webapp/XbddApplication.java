@@ -25,8 +25,15 @@ import org.glassfish.jersey.server.TracingConfig;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 import org.glassfish.jersey.server.mvc.jsp.JspProperties;
 
+import xbdd.model.databind.CucumberEmbeddingDeserializer;
+import xbdd.model.databind.CucumberEmbeddingSerializer;
+import xbdd.model.transform.FeatureTransformer;
+import xbdd.model.transform.ScenarioListTransformer;
+import xbdd.webapp.factory.GridFSFactory;
 import xbdd.webapp.factory.MongoDBAccessor;
 import xbdd.webapp.factory.ServletContextMongoClientFactory;
+
+import com.mongodb.gridfs.GridFS;
 
 public class XbddApplication extends ResourceConfig {
 
@@ -46,7 +53,15 @@ public class XbddApplication extends ResourceConfig {
 		register(new AbstractBinder() {
 			@Override
 			protected void configure() {
+				/* Bindings */
+				bind(CucumberEmbeddingDeserializer.class).to(CucumberEmbeddingDeserializer.class);
+				bind(CucumberEmbeddingSerializer.class).to(CucumberEmbeddingSerializer.class);
+				bind(ScenarioListTransformer.class).to(ScenarioListTransformer.class);
+				bind(FeatureTransformer.class).to(FeatureTransformer.class);
+
+				/* Factories */
 				bindFactory(ServletContextMongoClientFactory.class).to(MongoDBAccessor.class).in(Singleton.class);
+				bindFactory(GridFSFactory.class).to(GridFS.class);
 			}
 		});
 	}

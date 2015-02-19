@@ -28,8 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.mvc.Viewable;
-
-import xbdd.webapp.util.Coordinates;
+import xbdd.model.Coordinates;
 
 @Path("/build-order/{product}/{major}.{minor}.{servicePack}")
 public class BuildOrdering {
@@ -41,7 +40,7 @@ public class BuildOrdering {
 	public Response getIt(@BeanParam final Coordinates coordinates, @Context final ServletContext context) {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		map.put("product", coordinates.getProduct());
-		map.put("version", coordinates.getVersionString());
+		map.put("version", coordinates.getVersion());
 		return Response.ok(new Viewable(VIEW_ID, map)).build();
 	}
 }

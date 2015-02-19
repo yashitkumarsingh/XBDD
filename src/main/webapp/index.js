@@ -72,8 +72,7 @@ YUI().use('node', 'io-base', 'event-base', 'json-parse', 'handlebars', 'statusHe
 		method: 'GET',
 		on: {
 			success: function (transactionId, response) {
-				var data = Y.JSON.parse(response.responseText),
-					recentFeatures = data.recents,
+				var recentFeatures = Y.JSON.parse(response.responseText),
 					i = recentFeatures.length - 1,
                     feature;
 
@@ -82,16 +81,8 @@ YUI().use('node', 'io-base', 'event-base', 'json-parse', 'handlebars', 'statusHe
 				}
 
 				while (i >= 0) {
-                    feature = {
-                        name: recentFeatures[i].name,
-                        id: recentFeatures[i].id,
-                        coordinates: {
-                            product: recentFeatures[i].product,
-                            version: recentFeatures[i].version,
-                            build: recentFeatures[i].build
-                        }
-                    };
-                    featureContainer.append(featureTemplate(feature));
+					feature = recentFeatures[i];
+					featureContainer.append(featureTemplate(feature));
 					i--;
 				}
 			}
@@ -103,8 +94,7 @@ YUI().use('node', 'io-base', 'event-base', 'json-parse', 'handlebars', 'statusHe
 		method: 'GET',
 		on: {
 			success: function (transactionId, response) {
-				var data = Y.JSON.parse(response.responseText),
-					recentBuilds = data.recents,
+				var recentBuilds = Y.JSON.parse(response.responseText),
 					i = recentBuilds.length - 1;
 
 				if (recentBuilds.length === 0) {

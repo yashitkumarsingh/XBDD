@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import xbdd.webapp.util.Coordinates;
+import xbdd.model.Coordinates;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;

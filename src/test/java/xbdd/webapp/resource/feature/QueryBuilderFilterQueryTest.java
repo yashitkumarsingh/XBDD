@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.Assert;
 import org.junit.Test;
 
-import xbdd.webapp.util.Coordinates;
+import xbdd.model.Coordinates;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;

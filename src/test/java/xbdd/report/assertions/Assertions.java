@@ -15,9 +15,9 @@
  */
 package xbdd.report.assertions;
 
-import xbdd.report.FeatureSummary;
-import xbdd.report.ScenarioSummary;
-import xbdd.report.StepSummary;
+import xbdd.it.report.FeatureSummary;
+import xbdd.it.report.ScenarioSummary;
+import xbdd.it.report.StepSummary;
 
 /**
  * Entry point for assertions of different data types. Each method in this class is a static factory for the type-specific assertion

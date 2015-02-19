@@ -17,9 +17,9 @@ package xbdd.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import xbdd.model.Feature;
+import xbdd.model.Scenario;
 
-import xbdd.model.simple.Feature;
-import xbdd.model.simple.Scenario;
 
 /**
  * Represents a map of the status of a uniquely identified scenario over multiple builds

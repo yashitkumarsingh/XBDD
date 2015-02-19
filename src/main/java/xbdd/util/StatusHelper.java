@@ -16,14 +16,24 @@
 package xbdd.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.DBObject;
+import xbdd.model.Feature;
+import xbdd.model.Scenario;
+import xbdd.model.cucumber.CucumberResult;
+import xbdd.model.cucumber.CucumberStep;
 
 public class StatusHelper {
 
-	public static Statuses reduceStatuses(final List<String> allStatuses) {
+
+	/**
+	 * For a given collection statuses return the "reduced" state.
+	 * 
+	 * @param allStatuses
+	 * @return the reduced state
+	 */
+	public static Statuses reduceStatuses(final Collection<String> allStatuses) {
 		if (allStatuses.contains("failed")) {
 			return Statuses.FAILED;
 		}
@@ -41,20 +51,26 @@ public class StatusHelper {
 	}
 
 	// go through all the steps in a scenario and reduce to a status for the scenario.
-	public static Statuses getFinalScenarioStatus(final DBObject scenario, final boolean includeManualResults) {
-		final List<String> allStatuses = new ArrayList<String>();
-		final BasicDBList steps = (BasicDBList) scenario.get("steps");
+	/**
+	 * Reduce the status of all steps in the {@link Scenario}
+	 * 
+	 * @param scenario the {@link Scenario}
+	 * @param includeManualResults whether to include the results of manual tests
+	 * @return the reduced status
+	 */
+	public static Statuses getFinalScenarioStatus(final Scenario scenario, final boolean includeManualResults) {
+		final ArrayList<String> allStatuses = new ArrayList<String>();
+		final List<CucumberStep> steps = scenario.getSteps();
 		if (includeManualResults) { // if we have got a bunch of manual step executions
 			boolean hasManuallyExecutedSteps = false;
 			final List<String> manualSteps = new ArrayList<String>();
 			// go through each step creating an array as though they were manual
 			if (steps != null) {
-				for (int i = 0; i < steps.size(); i++) {
-					final DBObject step = (DBObject) steps.get(i);
-					final DBObject result = (DBObject) step.get("result");
+				for (final CucumberStep step : steps) {
+					final CucumberResult result = step.getResult();
 					if (result != null) {
-						if (result.get("manualStatus") != null) {
-							manualSteps.add((String) result.get("manualStatus")); // if there is manual status include it
+						if (result.getManualStatus() != null) {
+							manualSteps.add(result.getManualStatus()); // if there is manual status include it
 							hasManuallyExecutedSteps = true; // mark that there is a manual step executed
 						} else {
 							manualSteps.add("undefined"); // otherwise it is effectively unexecuted/undefined
@@ -63,14 +79,13 @@ public class StatusHelper {
 				}
 			}
 			// do the same for the background steps
-			if (scenario.get("background") != null) {// only if there are background steps.
-				final BasicDBList backgroundSteps = (BasicDBList) ((DBObject) scenario.get("background")).get("steps");
+			if (scenario.getBackground() != null) {// only if there are background steps.
+				final List<CucumberStep> backgroundSteps = scenario.getBackground().getSteps();
 				if (backgroundSteps != null) {
-					for (int i = 0; i < backgroundSteps.size(); i++) {
-						final DBObject backGroundStep = (DBObject) backgroundSteps.get(i);
-						final DBObject result = (DBObject) backGroundStep.get("result");
+					for (final CucumberStep backGroundStep : backgroundSteps) {
+						final CucumberResult result = backGroundStep.getResult();
 						if (result != null) {
-							final String manualStatus = (String) result.get("manualStatus");
+							final String manualStatus = result.getManualStatus();
 							if (manualStatus != null) {
 								manualSteps.add(manualStatus); // if there is manual status include it
 								hasManuallyExecutedSteps = true; // mark that there is a manual step executed
@@ -85,42 +100,37 @@ public class StatusHelper {
 				allStatuses.addAll(manualSteps);// then treat this scenario as though it has been manually executed.
 			} else {
 				if (steps != null) {
-					for (int i = 0; i < steps.size(); i++) {
-						final DBObject step = (DBObject) steps.get(i);
-						final DBObject result = (DBObject) step.get("result");
+					for (final CucumberStep step : steps) {
+						final CucumberResult result = step.getResult();
 						if (result == null) {
 							throw new RuntimeException(
 									"You are missing a 'result' element in your steps, perhaps you need to use a later version of cucumber to generate your report (>1.1.3)?'");
 						}
-						allStatuses.add((String) result.get("status"));// otherwise just include whatever automated step statuses exist.
+						allStatuses.add(result.getStatus());// otherwise just include whatever automated step statuses exist.
 					}
 				}
-				if (scenario.get("background") != null) {
-					final BasicDBList backgroundSteps = (BasicDBList) ((DBObject) scenario.get("background")).get("steps");
+				if (scenario.getBackground() != null) {
+					final List<CucumberStep> backgroundSteps = scenario.getBackground().getSteps();
 					if (backgroundSteps != null) {
-						for (int i = 0; i < backgroundSteps.size(); i++) {
-							final DBObject step = (DBObject) backgroundSteps.get(i);
-							final DBObject result = (DBObject) step.get("result");
-							allStatuses.add((String) result.get("status"));// make sure to include the background steps too.
+						for (final CucumberStep step : backgroundSteps) {
+							final CucumberResult result = step.getResult();
+							allStatuses.add(result.getStatus());// make sure to include the background steps too.
 						}
 					}
 				}
 			}
 		} else { // if we are not including manual steps then just include the automated statuses.
 			if (steps != null) {
-				for (int i = 0; i < steps.size(); i++) {
-					final DBObject step = (DBObject) steps.get(i);
-					final DBObject result = (DBObject) step.get("result");
-					allStatuses.add((String) result.get("status"));
+				for (final CucumberStep step : steps) {
+					final CucumberResult result = step.getResult();
+					allStatuses.add(result.getStatus());
 				}
 			}
-			if (scenario.get("background") != null) {
-				final BasicDBList backgroundSteps = (BasicDBList) ((DBObject) scenario.get("background")).get("steps");
+			if (scenario.getBackground() != null) {
+				final List<CucumberStep> backgroundSteps = scenario.getBackground().getSteps();
 				if (backgroundSteps != null) {
-					for (int i = 0; i < backgroundSteps.size(); i++) {
-						final DBObject step = (DBObject) backgroundSteps.get(i);
-						allStatuses.add((String) ((DBObject) step.get("result")).get("status"));// make sure to include the background steps
-																								// too.
+					for (final CucumberStep step : backgroundSteps) {
+						allStatuses.add(step.getResult().getStatus());// make sure to include the background steps too.
 					}
 				}
 			}
@@ -129,7 +139,7 @@ public class StatusHelper {
 		return reduceStatuses(allStatuses);
 	}
 
-	private static String getScenarioStatus(final DBObject scenario) {
+	private static String getScenarioStatus(final Scenario scenario) {
 		return getFinalScenarioStatus(scenario, true).getTextName();
 	}
 
@@ -141,13 +151,12 @@ public class StatusHelper {
 		}
 	}
 
-	public static String getFeatureStatus(final DBObject feature) {
-		final List<String> allStatuses = new ArrayList<String>();
-		final BasicDBList featureElements = (BasicDBList) feature.get("elements");
+	public static String getFeatureStatus(final Feature feature) {
+		final List<String> allStatuses = new ArrayList<>();
+		final List<Scenario> featureElements = feature.getScenarios();
 		if (featureElements != null) {
-			for (int i = 0; i < featureElements.size(); i++) {
-				final DBObject scenario = (DBObject) featureElements.get(i);
-				if (isScenarioKeyword((String) scenario.get("keyword"))) {
+			for (final Scenario scenario : featureElements) {
+				if (isScenarioKeyword(scenario.getKeyword())) {
 					allStatuses.add(getScenarioStatus(scenario));
 				}
 			}

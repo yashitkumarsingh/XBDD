@@ -31,7 +31,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import xbdd.webapp.factory.MongoDBAccessor;
-import xbdd.webapp.util.Coordinates;
+import xbdd.webapp.rest.Search;
+import xbdd.model.Coordinates;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
