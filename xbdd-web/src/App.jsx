@@ -9,6 +9,7 @@ import featureRollupData from './resources/dummyFeatureRollupData.json';
 const App = () => (
     <div className="App">
         <FeatureSummaryViewContainer
+            feature={new Feature(data)}
             featureRollupData={new FeatureHistory(featureRollupData)}
         />
     </div>
