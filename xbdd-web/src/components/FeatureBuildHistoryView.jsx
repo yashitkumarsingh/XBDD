@@ -9,14 +9,16 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { Card } from '@material-ui/core';
 import FeatureHistory from '../models/FeatureHistory';
 
 const styles = theme => ({
-    buildHistoryViewContainer: {
+    featureBuildHistoryViewContainer: {
         width: '100%',
         maxWidth: 570,
         backgroundColor: theme.palette.background.paper,
+    },
+    featureBuildHistoryViewTitle: {
+
     },
 });
 
@@ -45,8 +47,8 @@ class FeatureBuildHistoryViewContainer extends Component {
     render() {
         const { classes } = this.props;
         return (
-            <Card raised className={classes.buildHistoryViewContainer}>
-                <div className="xbdd-feature-history-view-title">Execution History</div>
+            <div className={classes.featureBuildHistoryViewContainer}>
+                <p className={classes.featureBuildHistoryViewTitle}>Execution History</p>
                 <GridList className={classes.gridList} cols={20} spacing={0} cellHeight="auto">
                     {this.props.featureRollupData.builds.map(build => (
                         <GridListTile key={build.buildNumber}>
@@ -56,7 +58,7 @@ class FeatureBuildHistoryViewContainer extends Component {
                         </GridListTile>
                     ))}
                 </GridList>
-            </Card>
+            </div>
         );
     }
 }
